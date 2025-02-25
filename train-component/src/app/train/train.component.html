@@ -1,0 +1,53 @@
+<div *ngIf="message" class="notification" [ngClass]="messageType">{{ message }}</div>
+
+<button (click)="openCreateModal()">Add Component</button>
+
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Unique Number</th>
+    <th>Quantity</th>
+    <th>Actions</th>
+  </tr>
+  <tr *ngFor="let component of components">
+    <td>{{ component.id }}</td>
+    <td>
+      <input *ngIf="editMode[component.id]" [(ngModel)]="component.name" />
+      <span *ngIf="!editMode[component.id]">{{ component.name }}</span>
+    </td>
+    <td>
+      <input *ngIf="editMode[component.id]" [(ngModel)]="component.uniqueNumber" />
+      <span *ngIf="!editMode[component.id]">{{ component.uniqueNumber }}</span>
+    </td>
+    <td *ngIf="component.canAssignQuantity">
+      <input [(ngModel)]="component.quantity" type="number" min="1" />
+    </td>
+    <td *ngIf="!component.canAssignQuantity"><span>Single Component</span></td>
+    <td class="actions">
+      <button *ngIf="!editMode[component.id]" (click)="enableEdit(component)">Update</button>
+      <button *ngIf="editMode[component.id]" (click)="updateComponent(component)">Save</button>
+      <button *ngIf="component.canAssignQuantity" (click)="updateQuantity(component)">Update Quantity</button>
+      <button *ngIf="editMode[component.id]" (click)="cancelEdit(component)" class="cancel-btn">Cancel</button>
+    </td>
+  </tr>
+</table>
+
+<div class="action-buttons">
+  <button (click)="prevPage()">Previous</button>
+  <button (click)="nextPage()">Next</button>
+</div>
+
+<app-modal [isOpen]="isModalOpen" title="Add New Component" (closeEvent)="isModalOpen = false" (saveEvent)="createComponent()">
+  <div class="modal-body">
+    <label>Name: <input [(ngModel)]="newComponent.name" /></label>
+    <label>Unique Number: <input [(ngModel)]="newComponent.uniqueNumber" /></label>
+    <label>
+      <input type="checkbox" [(ngModel)]="newComponent.canAssignQuantity" />
+      Can Assign Quantity
+    </label>
+    <label *ngIf="newComponent.canAssignQuantity">
+      Quantity: <input type="number" [(ngModel)]="newComponent.quantity" min="1" />
+    </label>
+  </div>
+</app-modal>
